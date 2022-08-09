@@ -27,11 +27,13 @@ class ScoreBoard implements IScoreBoard {
             }
         }
         // Create new Match and mark teams as playing
+        Score newScore = new Score(HomeTeam, AwayTeam);
         synchronized (this.lock) {
             this.teams.put(HomeTeam, true);
             this.teams.put(AwayTeam, true);
-            return this.board.put(key, new Score(HomeTeam, AwayTeam));
+            this.board.put(key, newScore);
         }
+        return newScore;
     }
 
     @Override
@@ -39,14 +41,15 @@ class ScoreBoard implements IScoreBoard {
         this.validateParams(HomeTeam, AwayTeam);
         String key = ScoreBoard.createScoreKey(HomeTeam, AwayTeam);
         // Clear Playing teams and return final match score if found, otherwise null
+        Score finalScore;
         synchronized (this.lock) {
-            Score finalScore = this.board.remove(key);
+            finalScore = this.board.remove(key);
             if (finalScore != null) {
                 this.teams.remove(HomeTeam);
                 this.teams.remove(AwayTeam);
             }
-            return finalScore;
         }
+        return finalScore;
     }
 
     @Override
@@ -54,20 +57,23 @@ class ScoreBoard implements IScoreBoard {
         this.validateParams(HomeTeam, AwayTeam, HomeScore, AwayScore);
         String key = ScoreBoard.createScoreKey(HomeTeam, AwayTeam);
         // Find ongoing match, update score and return it
+        Score ongoingScore;
         synchronized (this.lock) {
-            Score ongoingScore = this.board.get(key);
+            ongoingScore = this.board.get(key);
             if (ongoingScore != null) {
                 ongoingScore.setScores(HomeScore, AwayScore);
             }
-            return ongoingScore;
         }
+        return ongoingScore;
     }
 
     @Override
     public Iterable<Score> ViewScoreBoard() {
+        Iterable<Score> sortedBoard;
         synchronized (this.lock) {
-            return this.board.values().stream().sorted().toList();
+            sortedBoard = this.board.values().stream().sorted().toList();
         }
+        return sortedBoard;
     }
 
     private void validateParams(String HomeTeam, String AwayTeam) {
