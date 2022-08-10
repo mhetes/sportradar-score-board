@@ -24,8 +24,6 @@ public class ScoreBoardTest {
                 () -> scoreBoard.StartMatch("Peru", "USA"),
                 "Cannot create new match with team active on board"
         );
-        // Cleanup
-        scoreBoard.EndMatch("Peru", "Moldova");
     }
 
     @Test
@@ -55,8 +53,6 @@ public class ScoreBoardTest {
         Score s3 = scoreBoard.UpdateScore("Mongolia", "Hungary", 2, 1);
         Assertions.assertEquals(s2, s3);
         Assertions.assertEquals("Mongolia (2 - 1) Hungary", s2.toString());
-        // Cleanup
-        scoreBoard.EndMatch("Mongolia", "Hungary");
     }
 
     @Test
@@ -90,12 +86,6 @@ public class ScoreBoardTest {
         Score s5 = boardIterator.next();
         Assertions.assertEquals("Germany (2 - 2) France", s5.toString());
         Assertions.assertFalse(boardIterator.hasNext());
-        // Cleanup
-        scoreBoard.EndMatch("Mexico", "Canada");
-        scoreBoard.EndMatch("Spain", "Brazil");
-        scoreBoard.EndMatch("Germany", "France");
-        scoreBoard.EndMatch("Uruguay", "Italy");
-        scoreBoard.EndMatch("Argentina", "Australia");
     }
 
     @Test
